@@ -1,5 +1,5 @@
-// 模拟当前用户数据
-const currentUser = {
+// 将 teamworks 和 currentUser 设为全局变量
+currentUser = {
     id: 1,
     name: "张三",
     role: "tutor" // 可以是 'tutor' 或 'student'
@@ -8,7 +8,7 @@ const currentUser = {
 // 作业状态
 const TEAMWORK_STATUSES = ['未完成', '已完成'];
 
-// 模拟作业数据
+// 将 teamworks 设为全局变量
 let teamworks = [
     {
         id: 1,
@@ -77,17 +77,18 @@ function loadTeamworks() {
 function displayTeamworks(teamworksToDisplay) {
     const allTeamworkList = document.getElementById('allTeamworkList');
     const myTeamworkList = document.getElementById('myTeamworkList');
-    allTeamworkList.innerHTML = '';
-    myTeamworkList.innerHTML = '';
+    
+    if (allTeamworkList) allTeamworkList.innerHTML = '';
+    if (myTeamworkList) myTeamworkList.innerHTML = '';
 
     teamworksToDisplay.forEach(teamwork => {
         const teamworkElement = createTeamworkElement(teamwork);
-        allTeamworkList.appendChild(teamworkElement.cloneNode(true));
+        if (allTeamworkList) allTeamworkList.appendChild(teamworkElement.cloneNode(true));
         
         if (currentUser.role === 'tutor' && teamwork.creator.id === currentUser.id) {
-            myTeamworkList.appendChild(teamworkElement);
+            if (myTeamworkList) myTeamworkList.appendChild(teamworkElement);
         } else if (currentUser.role === 'student' && teamwork.submissions.some(sub => sub.studentId === currentUser.id)) {
-            myTeamworkList.appendChild(teamworkElement);
+            if (myTeamworkList) myTeamworkList.appendChild(teamworkElement);
         }
     });
 }
@@ -95,27 +96,44 @@ function displayTeamworks(teamworksToDisplay) {
 function createTeamworkElement(teamwork) {
     const teamworkElement = document.createElement('div');
     teamworkElement.className = 'teamwork-item';
+    teamworkElement.dataset.id = teamwork.id;
+
+    // 使用模板字符串创建 HTML 内容
     teamworkElement.innerHTML = `
         <h3>${teamwork.name}</h3>
         <p>${teamwork.content}</p>
         <p>状态: ${teamwork.status}</p>
         <p>所需人数: ${teamwork.requiredMembers}</p>
-        <p>当前成员: ${teamwork.members ? teamwork.members.length : 0}/${teamwork.requiredMembers}</p>
-        <div class="teamwork-actions">
-            <button onclick="viewTeamwork(${teamwork.id})">查看详情</button>
-            ${currentUser.role === 'tutor' && teamwork.creator.id === currentUser.id ? `
-                <button onclick="editTeamwork(${teamwork.id})">编辑</button>
-                <button onclick="deleteTeamwork(${teamwork.id})">删除</button>
-                <button onclick="changeTeamworkStatus(${teamwork.id})">更改状态</button>
-            ` : `
-                ${teamwork.members && teamwork.members.some(member => member.id === currentUser.id) ?
-                    `<button onclick="leaveTeamwork(${teamwork.id})">退出作业</button>` :
-                    `<button onclick="joinTeamwork(${teamwork.id})">加入作业</button>`
-                }
-                <button onclick="submitTeamwork(${teamwork.id})">提交作业</button>
-            `}
-        </div>
+        <p>创建者: ${teamwork.creator.name}</p>
     `;
+
+    // 根据用户角色和作业状态添加不同的按钮
+    if (currentUser.role === 'student') {
+        if (!teamwork.members.some(member => member.id === currentUser.id)) {
+            const joinButton = document.createElement('button');
+            joinButton.textContent = '加入作业';
+            joinButton.onclick = () => joinTeamwork(teamwork.id);
+            teamworkElement.appendChild(joinButton);
+        } else {
+            const leaveButton = document.createElement('button');
+            leaveButton.textContent = '退出作业';
+            leaveButton.onclick = () => leaveTeamwork(teamwork.id);
+            teamworkElement.appendChild(leaveButton);
+        }
+
+        if (teamwork.status === '未完成') {
+            const submitButton = document.createElement('button');
+            submitButton.textContent = '提交作业';
+            submitButton.onclick = () => submitTeamwork(teamwork.id);
+            teamworkElement.appendChild(submitButton);
+        }
+    } else if (currentUser.role === 'tutor' && teamwork.creator.id === currentUser.id) {
+        const changeStatusButton = document.createElement('button');
+        changeStatusButton.textContent = '更改状态';
+        changeStatusButton.onclick = () => changeTeamworkStatus(teamwork.id);
+        teamworkElement.appendChild(changeStatusButton);
+    }
+
     return teamworkElement;
 }
 
@@ -234,7 +252,8 @@ function handleTeamworkSearch(event) {
     }
 }
 
-function joinTeamwork(teamworkId) {
+// 将 joinTeamwork 函数设为全局可访问
+joinTeamwork = function(teamworkId) {
     const teamwork = teamworks.find(t => t.id === teamworkId);
     if (teamwork && currentUser.role === 'student') {
         if (!teamwork.members) {
@@ -257,7 +276,7 @@ function joinTeamwork(teamworkId) {
     } else {
         alert('只有学生可以加入作业。');
     }
-}
+};
 
 function leaveTeamwork(teamworkId) {
     const teamwork = teamworks.find(t => t.id === teamworkId);
@@ -270,4 +289,5 @@ function leaveTeamwork(teamworkId) {
     } else {
         alert('您不是该作业的成员。');
     }
+    
 }

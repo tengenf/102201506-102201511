@@ -1,0 +1,21 @@
+{
+  "name": "sw_paring_work2",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "jest-environment-jsdom": "^29.7.0",
+    "jsdom": "^25.0.1",
+    "jsdom-global": "^3.0.2"
+  },
+  "jest": {
+    "testEnvironment": "jsdom"
+  }
+}
