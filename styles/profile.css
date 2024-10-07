@@ -1,0 +1,73 @@
+.profile-container {
+    max-width: 800px; /* 增加最大宽度 */
+    margin: 60px auto; /* 增加上下边距 */
+    padding: 0 20px; /* 添加左右内边距，适应小屏幕 */
+}
+
+.profile-card {
+    background-color: #ffffff;
+    border-radius: 16px; /* 增加圆角 */
+    box-shadow: 0 6px 30px rgba(0,0,0,0.1); /* 增强阴影效果 */
+    padding: 80px; /* 增加内边距 */
+}
+
+.profile-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 40px; /* 增加下边距 */
+}
+
+.profile-avatar {
+    width: 100px; /* 增加头像大小 */
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 30px; /* 增加右边距 */
+    border: 3px solid #f2f2f7; /* 添加边框 */
+}
+
+.profile-form .form-group {
+    margin-bottom: 25px; /* 增加表单组之间的间距 */
+}
+
+.profile-form label {
+    display: block;
+    margin-bottom: 8px; /* 增加标签下边距 */
+    font-weight: 600; /* 加粗字体 */
+    color: #1d1d1f;
+    font-size: 14px; /* 调整字体大小 */
+}
+
+.profile-form input,
+.profile-form select,
+.profile-form textarea {
+    width: 100%;
+    padding: 14px; /* 增加内边距 */
+    border: 1px solid #d2d2d7;
+    border-radius: 10px; /* 增加圆角 */
+    font-size: 16px;
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.profile-form input:focus,
+.profile-form select:focus,
+.profile-form textarea:focus {
+    border-color: #0071e3;
+    outline: none;
+}
+
+.btn-primary {
+    width: 100%;
+    padding: 12px;
+    background-color: #0071e3;
+    color: #ffffff;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.btn-primary:hover {
+    background-color: #0077ed;
+}

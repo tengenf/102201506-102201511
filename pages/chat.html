@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>聊天 - FZUteam</title>
+    <link rel="stylesheet" href="../styles/main.css">
+    <link rel="stylesheet" href="../styles/common.css">
+</head>
+<body>
+    <header>
+        <nav>
+            <ul>
+                <li><a href="dashboard.html">仪表板</a></li>
+                <li><a href="project-list.html">项目列表</a></li>
+                <li><a href="team-management.html">团队管理</a></li>
+                <li><a href="chat.html">聊天</a></li>
+                <li><a href="calendar.html">日程</a></li>
+                <li><a href="profile.html">个人资料</a></li>
+                <li><a href="#" id="logout">退出</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main id="mainContent">
+        <div class="container">
+            <h2>聊天</h2>
+            <div id="chatContainer">
+                <div id="chatList">
+                    <!-- 聊天列表将通过 JavaScript 动态加载 -->
+                </div>
+                <div id="chatWindow">
+                    <div id="messageArea"></div>
+                    <form id="messageForm">
+                        <input type="text" id="messageInput" placeholder="输入消息...">
+                        <button type="submit">发送</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </main>
+  
+    <script src="../scripts/chat.js"></script>
+    <script src="../scripts/common.js"></script>
+</body>
+</html>
