@@ -29,7 +29,7 @@ beforeAll(() => {
 require('../scripts/teamworks.js');
 
 // 确保 joinTeamwork 函数被正确地赋值给 global 对象
-global.joinTeamwork = window.joinTeamwork;
+global.joinTeamwork = global.joinTeamwork || window.joinTeamwork;
 
 describe('joinTeamwork function', () => {
   // 每个测试之前重置 teamworks 和 currentUser
@@ -82,12 +82,16 @@ describe('joinTeamwork function', () => {
   });
 
   test('当作业达到人数上限时，学生不能加入', () => {
-    global.teamworks[0].members = [{ id: 3, name: "王五" }, { id: 4, name: "赵六" }];
+    const memberLimit = 2; // 明确设置上限
+    global.teamworks[0].requiredMembers = memberLimit; // 设置作业的成员上限
+    global.teamworks[0].members = Array(memberLimit).fill().map((_, index) => ({ id: index + 3, name: `成员${index + 1}` }));
+    
     global.joinTeamwork(1);
-    expect(global.teamworks[0].members.length).toBe(2);
+    
+    expect(global.teamworks[0].members.length).toBe(memberLimit);
     expect(global.teamworks[0].members.some(member => member.id === global.currentUser.id)).toBeFalsy();
     expect(global.alert).toHaveBeenCalledWith('该作业已达到所需人数上限。');
-  });
+});
 
   test('导师不能加入作业', () => {
     global.currentUser.role = 'tutor';

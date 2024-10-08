@@ -58,6 +58,21 @@ function handleLogin(event) {
     
     // 模拟服务器响应
     setTimeout(() => {
+        // 创建用户数据对象
+        const userData = {
+            id: Math.floor(Math.random() * 1000), // 模拟用户ID
+            name: email.split('@')[0], // 使用邮箱的用户名部分作为名字
+            role: role
+        };
+
+        // 调用 setCurrentUser 函数
+        if (typeof window.setCurrentUser === 'function') {
+            window.setCurrentUser(userData);
+            console.log('当前用户已设置:', userData);
+        } else {
+            console.error('setCurrentUser 函数未定义');
+        }
+
         alert('登录成功!');
         // 登录成功后重定向到首页
         window.location.href = '../index.html';
