@@ -39,30 +39,37 @@ function renderChatDetail() {
 }
 
 function loadChatMessages() {
-    // 在实际应用中,这里应该从URL参数获取聊天ID,然后从后端API获取聊天消息
     const chatId = new URLSearchParams(window.location.search).get('id');
     console.log('Loading messages for chat ID:', chatId);
 
-    // 模拟从后端获取数据
     setTimeout(() => {
-        const messages = [
-            { id: 1, sender: 'other', content: '你好!', timestamp: '10:00' },
-            { id: 2, sender: 'self', content: '你好!有什么可以帮到你的吗?', timestamp: '10:01' },
-            { id: 3, sender: 'other', content: '我想问一下关于项目进度的事情。', timestamp: '10:02' },
-            { id: 4, sender: 'self', content: '好的,我们目前正按计划进行,预计下周可以完成第一阶段。', timestamp: '10:03' },
-        ];
-        displayMessages(messages);
+        try {
+            const messages = [
+                { id: 1, sender: 'other', content: '你好!', timestamp: '10:00' },
+                { id: 2, sender: 'self', content: '你好!有什么可以帮到你的吗?', timestamp: '10:01' },
+                { id: 3, sender: 'other', content: '我想问一下关于项目进度的事情。', timestamp: '10:02' },
+                { id: 4, sender: 'self', content: '好的,我们目前正按计划进行,预计下周可以完成第一阶段。', timestamp: '10:03' },
+            ];
+            displayMessages(messages);
+        } catch (error) {
+            console.error('Error loading messages:', error);
+        }
     }, 1000);
 }
 
 function displayMessages(messages) {
     const messageList = document.getElementById('messageList');
-    messageList.innerHTML = messages.map(message => `
-        <div class="message ${message.sender === 'self' ? 'message-self' : 'message-other'}">
-            <div class="message-content">${message.content}</div>
-            <div class="message-timestamp">${message.timestamp}</div>
-        </div>
-    `).join('');
+    messageList.innerHTML = messages.map(message => {
+        if (typeof message === 'string') {
+            return message;
+        }
+        return `
+            <div class="message ${message.sender === 'self' ? 'message-self' : 'message-other'}">
+                <div class="message-content">${message.content || ''}</div>
+                <div class="message-timestamp">${message.timestamp || ''}</div>
+            </div>
+        `;
+    }).join('');
     messageList.scrollTop = messageList.scrollHeight;
 }
 
@@ -70,10 +77,16 @@ function sendMessage() {
     const input = document.getElementById('messageInput');
     const content = input.value.trim();
     if (content) {
-        // 在实际应用中,这里应该发送消息到后端API
         console.log('Sending message:', content);
-        const newMessage = { id: Date.now(), sender: 'self', content, timestamp: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) };
-        displayMessages([...document.getElementById('messageList').children, newMessage]);
+        const newMessage = { 
+            id: Date.now(), 
+            sender: 'self', 
+            content: content, 
+            timestamp: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) 
+        };
+        const messageList = document.getElementById('messageList');
+        const currentMessages = Array.from(messageList.children).map(child => child.outerHTML);
+        displayMessages([...currentMessages, newMessage]);
         input.value = '';
     }
 }
