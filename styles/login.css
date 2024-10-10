@@ -4,7 +4,7 @@
 }
 
 .form-group {
-    margin-bottom: 20px;
+    margin-bottom: 40px;
 }
 
 .form-group label {
@@ -14,15 +14,16 @@
 }
 
 .form-group input {
-    width: 90%;
+    width: 100%;
     padding: 10px;
-    border: 1px solid #ccc;
+    border: 2px solid #aaa;  /* 使用稍微深一点的颜色 */
     border-radius: 4px;
     font-size: 16px;
+    box-shadow: 0 0 5px rgba(0,0,0,0.1);  /* 添加轻微的阴影效果 */
 }
 
 .btn {
-    width: 90%;
+    width: 100%;
     padding: 12px;
     font-size: 16px;
 }
@@ -61,4 +62,10 @@ p a:hover {
 .radio-group input[type="radio"]:checked + label {
     background-color: #007aff;
     color: white;
+}
+
+.form-group input:focus {
+    border-color: #007aff;  /* 当输入框获得焦点时改变边框颜色 */
+    outline: none;  /* 移除默认的焦点轮廓 */
+    box-shadow: 0 0 5px rgba(0,122,255,0.3);  /* 添加蓝色阴影效果 */
 }
