@@ -7,7 +7,6 @@ function renderNavigation() {
     const nav = document.getElementById('mainNav');
     nav.innerHTML = `
         <ul>
-            <li><a href="../index.html">首页</a></li>
             <li><a href="login.html">登录</a></li>
             <li><a href="register.html">注册</a></li>
         </ul>

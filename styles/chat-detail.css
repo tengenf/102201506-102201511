@@ -11,6 +11,9 @@
     background-color: #ffffff;
     padding: 15px 20px;
     border-bottom: 1px solid #e0e0e0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 }
 
 .chat-avatar {
@@ -26,6 +29,20 @@
     font-size: 18px;
 }
 
+.cta-button-header {
+    margin-left: auto; /* Push the button to the right */
+    padding: 10px 20px;
+    background-color: #1877f2;
+    color: #ffffff;
+    text-decoration: none;
+    border-radius: 5px;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+}
+
+.cta-button:hover {
+    background-color: #166fe5;
+}
 .message-list {
     padding: 20px;
     height: calc(100vh - 200px);

@@ -4,24 +4,6 @@ document.addEventListener('DOMContentLoaded', () => {
     loadProfileData();
 });
 
-function renderNavigation() {
-    const nav = document.getElementById('mainNav');
-    nav.innerHTML = `
-        <ul>
-            <li><a href="dashboard.html">仪表板</a></li>
-            <li><a href="project-list.html">项目列表</a></li>
-            <li><a href="team-management.html">团队管理</a></li>
-            <li><a href="chat.html">聊天</a></li>
-            <li><a href="calendar.html">日程</a></li>
-            <li><a href="profile.html">个人资料</a></li>
-            <li><a href="teamworks.html">作业管理</a></li>
-            <li><a href="#" id="logout">退出</a></li>
-        </ul>
-    `;
-
-    // 添加退出功能
-    document.getElementById('logout').addEventListener('click', handleLogout);
-}
 
 function renderProfileForm() {
     const main = document.getElementById('mainContent');
@@ -30,7 +12,7 @@ function renderProfileForm() {
             <h2>个人资料</h2>
             <div class="profile-card">
                 <div class="profile-header">
-                    <img src="../images/default-avatar.png" alt="用户头像" class="profile-avatar">
+                    <img src="../images/me.png" alt="用户头像" class="profile-avatar">
                     <h3 id="userName">用户名</h3>
                 </div>
                 <form id="profileForm" class="profile-form">

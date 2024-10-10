@@ -52,7 +52,12 @@ function renderProjects(projectsToRender = projects) {
                     <button onclick="changeProjectStatus(${project.id})">修改状态</button>
                     <button onclick="deleteProject(${project.id})">删除</button>
                 ` : ''}
-                ${project.members.some(m => m.id === currentUser.id) ? `<button onclick="editProject(${project.id})">编辑</button>` : ''}
+                ${project.members.some(m => m.id === currentUser.id) ? `
+                    <button onclick="leaveProject(${project.id})">退出团队</button>
+                ` : `
+                    <button onclick="applyToJoinProject(${project.id})">申请加入</button>
+                `}
+                <button onclick="editProject(${project.id})">编辑</button>
                 <button onclick="viewProject(${project.id})">查看详情</button>
             </div>
         `;
@@ -160,24 +165,102 @@ function loadProjects() {
     renderProjects();
 }
 
+// 创建烟雾报警系统项目
+function createSmokeAlarmSystemProject() {
+    const existingProject = projects.find(p => p.name === "烟雾报警系统");
+    if (!existingProject) {
+        const newProject = {
+            id: Date.now(),
+            name: "烟雾报警系统",
+            description: "研发一套烟雾报警系统",
+            leader: { id: 6, name: "刘五" }, // 假设刘五是项目组长
+            members: [
+                { id: 7, name: "王六" },
+                { id: 8, name: "李七" }
+            ],
+            status: "规划中"
+        };
+        projects.push(newProject);
+        renderProjects();
+        saveProjects();
+    }
+}
+
+// 申请加入项目
+function applyToJoinProject(projectId) {
+    const project = projects.find(p => p.id === projectId);
+    if (project) {
+        // 模拟申请过程
+        alert("已经申请加入，请等待项目组长审核。");
+        setTimeout(() => {
+            // 模拟组长审核通过
+            alert("组长已同意，加入成功！");
+            project.members.push(currentUser);
+            renderProjects();
+            saveProjects();
+        }, 5000); // 等待5秒
+    }
+}
+
+// 退出项目
+function leaveProject(projectId) {
+    const project = projects.find(p => p.id === projectId);
+    if (project) {
+        const index = project.members.findIndex(m => m.id === currentUser.id);
+        if (index !== -1) {
+            project.members.splice(index, 1);
+            renderProjects();
+            saveProjects();
+            alert("已退出团队。");
+        } else {
+            alert("你不是这个项目的成员。");
+        }
+    }
+}
+
 // 初始化
 document.addEventListener('DOMContentLoaded', () => {
-    loadProjects();
+    // 初始化项目数据
+    projects = [
+        {
+            id: 1,
+            name: "智能家居系统",
+            description: "开发一套智能家居控制系统",
+            leader: { id: 1, name: "张三" },
+            members: [
+                { id: 1, name: "张三" },
+                { id: 2, name: "李四" },
+                { id: 3, name: "王五" }
+            ],
+            status: "进行中"
+        },
+        {
+            id: 2,
+            name: "移动支付平台",
+            description: "构建安全高效的移动支付解决方案",
+            leader: { id: 4, name: "赵六" },
+            members: [
+                { id: 4, name: "赵六" },
+                { id: 5, name: "钱七" }
+            ],
+            status: "规划中"
+        }
+    ];
+    renderProjects();
+    createSmokeAlarmSystemProject(); // 创建烟雾报警系统项目
     document.getElementById('createProject').addEventListener('click', createProject);
-});
-
-// 项目搜索功能
-document.getElementById('projectSearch').addEventListener('input', (e) => {
-    const searchTerm = e.target.value.toLowerCase().trim();
-    if (searchTerm === '') {
-        renderProjects();
-    } else {
-        const filteredProjects = projects.filter(project => 
-            project.name.toLowerCase().includes(searchTerm) ||
-            project.description.toLowerCase().includes(searchTerm) ||
-            project.status.toLowerCase().includes(searchTerm) ||
-            project.members.some(member => member.name.toLowerCase().includes(searchTerm))
-        );
-        renderProjects(filteredProjects);
-    }
+    document.getElementById('projectSearch').addEventListener('input', (e) => {
+        const searchTerm = e.target.value.toLowerCase().trim();
+        if (searchTerm === '') {
+            renderProjects();
+        } else {
+            const filteredProjects = projects.filter(project => 
+                project.name.toLowerCase().includes(searchTerm) ||
+                project.description.toLowerCase().includes(searchTerm) ||
+                project.status.toLowerCase().includes(searchTerm) ||
+                project.members.some(member => member.name.toLowerCase().includes(searchTerm))
+            );
+            renderProjects(filteredProjects);
+        }
+    });
 });
