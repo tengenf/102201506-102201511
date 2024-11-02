@@ -1,23 +1,148 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>仪表板 - FZUteam</title>
-    <link rel="stylesheet" href="../styles/main.css">
-    <link rel="stylesheet" href="../styles/common.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>个人记账本</title>
+<style>
+  body { font-family: Arial, sans-serif; }
+  .container { width: 80%; margin: auto; }
+  .record-form { margin-bottom: 20px; }
+  .record-form input, .record-form select { margin-right: 10px; }
+  .record-list { margin-top: 20px; }
+  .record-item { margin-bottom: 10px; padding: 10px; border: 1px solid #ddd; }
+  .stats { margin-top: 20px; }
+  canvas { max-width: 100%; height: auto; }
+</style>
 </head>
 <body>
-    <header>
-        <nav id="mainNav"></nav>
-    </header>
-    <main id="mainContent">
-        <div class="container">
-            <!-- 页面内容将通过 JavaScript 动态渲染 -->
-        </div>
-    </main>
-  
-    <script src="../scripts/dashboard.js"></script>
-    <script src="../scripts/common.js"></script>
+<div class="container">
+  <h1>个人记账本</h1>
+  <div class="record-form">
+    <input type="date" id="date" required>
+    <input type="number" id="amount" placeholder="金额" required>
+    <select id="category">
+      <option value="饮食">饮食</option>
+      <option value="交通">交通</option>
+      <option value="工资">工资</option>
+      <option value="其他">其他</option>
+    </select>
+    <input type="text" id="note" placeholder="备注">
+    <button onclick="addRecord()">添加记录</button>
+  </div>
+  <div class="record-list" id="recordList">
+    <!-- 记录将在这里显示 -->
+  </div>
+  <div class="stats">
+    <h2>统计</h2>
+    <p>Total Income: <span id="totalIncome">0</span></p>
+    <p>Total Expense: <span id="totalExpense">0</span></p>
+    <canvas id="chart"></canvas>
+  </div>
+</div>
+
+<script>
+// 存储记录的数组
+let records = JSON.parse(localStorage.getItem('records')) || [];
+
+// 添加记录到列表
+function addRecord() {
+  const date = document.getElementById('date').value;
+  const amount = parseFloat(document.getElementById('amount').value);
+  const category = document.getElementById('category').value;
+  const note = document.getElementById('note').value;
+
+  const record = { date, amount, category, note };
+  records.unshift(record); // 将新记录添加到数组的开始
+  displayRecords(); // 显示记录
+  updateStats(); // 更新统计
+  drawChart(); // 绘制图表
+  saveRecords(); // 保存记录
+}
+
+// 显示记录到页面
+function displayRecords() {
+  const recordList = document.getElementById('recordList');
+  recordList.innerHTML = ''; // 清空现有记录
+
+  records.forEach(record => {
+    const recordItem = document.createElement('div');
+    recordItem.className = 'record-item';
+    recordItem.innerHTML = `日期: ${record.date}, 金额: ${record.amount}, 类别: ${record.category}, 备注: ${record.note}`;
+    recordList.appendChild(recordItem);
+  });
+}
+
+// 更新统计
+function updateStats() {
+  let totalIncome = 0;
+  let totalExpense = 0;
+
+  records.forEach(record => {
+    if (record.category === '工资') {
+      totalIncome += record.amount;
+    } else {
+      totalExpense += record.amount;
+    }
+  });
+
+  document.getElementById('totalIncome').textContent = totalIncome.toFixed(2);
+  document.getElementById('totalExpense').textContent = totalExpense.toFixed(2);
+}
+
+// 绘制图表
+function drawChart() {
+  const ctx = document.getElementById('chart').getContext('2d');
+  const income = records.filter(r => r.category === '工资').map(r => r.amount).reduce((a, b) => a + b, 0);
+  const expenses = records.filter(r => r.category !== '工资').map(r => r.amount).reduce((a, b) => a + b, 0);
+
+  new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: ['收入', '支出'],
+      datasets: [{
+        label: '# of Votes',
+        data: [income, expenses],
+        backgroundColor: [
+          'rgba(54, 162, 235, 0.2)',
+          'rgba(255, 206, 86, 0.2)'
+        ],
+        borderColor: [
+          'rgba(54, 162, 235, 1)',
+          'rgba(255, 206, 86, 1)'
+        ],
+        borderWidth: 1
+      }]
+    },
+    options: {
+      scales: {
+        y: {
+          beginAtZero: true
+        }
+      }
+    }
+  });
+}
+
+// 保存记录到本地存储
+function saveRecords() {
+  localStorage.setItem('records', JSON.stringify(records));
+}
+
+// 加载记录从本地存储
+function loadRecords() {
+  const savedRecords = localStorage.getItem('records');
+  if (savedRecords) {
+    records = JSON.parse(savedRecords);
+    displayRecords();
+    updateStats();
+    drawChart();
+  }
+}
+
+// 在页面加载时加载记录
+window.onload = loadRecords;
+</script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </body>
 </html>
